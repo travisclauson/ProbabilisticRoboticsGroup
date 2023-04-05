@@ -1,0 +1,5 @@
+Tasks
+
+Task.     -       Description.        -   Team Member
+
+In progress - PyBullet Intro - Gain an understanding of PyBullet Environments, get example simulations working - EVERYONE 
