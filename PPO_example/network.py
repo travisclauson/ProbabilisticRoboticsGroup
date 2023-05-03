@@ -42,8 +42,11 @@ class FeedForwardNN(nn.Module):
 		# Convert observation to tensor if it's a numpy array
 		if isinstance(obs, np.ndarray):
 			obs = torch.tensor(obs, dtype=torch.float)
-
-		activation1 = F.relu(self.layer1(obs))
+		if isinstance(self.layer1(obs),tuple):
+			temp_layer1 = torch.tensor(self.layer1(obs), dtype=torch.float)
+		else:
+			temp_layer1 = self.layer1(obs)
+		activation1 = F.relu(temp_layer1)
 		activation2 = F.relu(self.layer2(activation1))
 		output = self.layer3(activation2)
 

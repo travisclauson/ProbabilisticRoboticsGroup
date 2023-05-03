@@ -344,8 +344,8 @@ class PPO:
 
 		# Miscellaneous parameters
 		self.render = True                              # If we should render during rollout
-		self.render_every_i = 10                        # Only render every n iterations
-		self.save_freq = 10                             # How often we save in number of iterations
+		self.render_every_i = 10                     	# Only render every n iterations
+		self.save_freq = 10                     		# How often we save in number of iterations
 		self.seed = None                                # Sets the seed of our program, used for reproducibility of results
 
 		# Change any default values to custom values for specified hyperparameters

@@ -11,6 +11,7 @@ from arguments import get_args
 from ppo import PPO
 from network import FeedForwardNN
 from eval_policy import eval_policy
+import time
 
 def train(env, hyperparameters, actor_model, critic_model):
 	"""
@@ -45,7 +46,7 @@ def train(env, hyperparameters, actor_model, critic_model):
 	# Train the PPO model with a specified total timesteps
 	# NOTE: You can change the total timesteps here, I put a big number just because
 	# you can kill the process whenever you feel like PPO is converging
-	model.learn(total_timesteps=20000)
+	model.learn(total_timesteps=200_000)
 
 def test(env, actor_model):
 	"""
@@ -108,13 +109,16 @@ def main(args):
 	# Creates the environment we'll be running. If you want to replace with your own
 	# custom environment, note that it must inherit Gym and have both continuous
 	# observation and action spaces.
-	env = gym.make('Pendulum-v1')
+	
+	env = gym.make('Pendulum-v1', render_mode="human")
+	env.reset()
 
 	# Train or test, depending on the mode specified
 	if args.mode == 'train':
 		train(env=env, hyperparameters=hyperparameters, actor_model=args.actor_model, critic_model=args.critic_model)
 	else:
 		test(env=env, actor_model=args.actor_model)
+
 
 if __name__ == '__main__':
 	args = get_args() # Parse arguments from command line
