@@ -3,7 +3,7 @@
 	https://medium.com/@eyyu/coding-ppo-from-scratch-with-pytorch-part-1-4-613dfc1b14c8
 """
 
-import gym
+import gymnasium as gym
 import sys
 import torch
 
@@ -45,7 +45,7 @@ def train(env, hyperparameters, actor_model, critic_model):
 	# Train the PPO model with a specified total timesteps
 	# NOTE: You can change the total timesteps here, I put a big number just because
 	# you can kill the process whenever you feel like PPO is converging
-	model.learn(total_timesteps=200_000_000)
+	model.learn(total_timesteps=20000)
 
 def test(env, actor_model):
 	"""
