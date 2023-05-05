@@ -9,7 +9,7 @@ class Robot:
         startPos = [0, 0, 0]
         startOrientation = p.getQuaternionFromEuler([0, 0, 0])
         f_name = os.path.join(os.path.dirname(__file__), 'panda_arm_hand.urdf')
-        self.robot = p.loadURDF(fileName=f_name, startPos, startOrientation, useFixedBase = 1)
+        self.robot = p.loadURDF(f_name, startPos, startOrientation, useFixedBase = 1)
     
     def get_ids(self):
         return self.robot, self.client

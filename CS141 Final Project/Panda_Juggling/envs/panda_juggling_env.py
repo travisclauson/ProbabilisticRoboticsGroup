@@ -4,7 +4,7 @@ import math
 import pybullet as p
 from Panda_Juggling.resources.ball import Ball
 from Panda_Juggling.resources.plane import Plane
-#from Panda_Juggling.resources.goal import Goal
+from Panda_Juggling.resources.robot import Robot
 import matplotlib.pyplot as plt
 
 class PandaJugglingEnv(gym.Env):
