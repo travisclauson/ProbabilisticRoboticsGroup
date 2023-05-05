@@ -259,6 +259,7 @@ class PPO:
 			for rew in reversed(ep_rews):
 				discounted_reward = rew + discounted_reward * self.gamma
 				batch_rtgs.insert(0, discounted_reward)
+				print(rew, discounted_reward)
 
 		# Convert the rewards-to-go into a tensor
 		batch_rtgs = torch.tensor(batch_rtgs, dtype=torch.float)
