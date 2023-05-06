@@ -3,6 +3,8 @@ import torch
 #from agent import PPOAgent
 import Panda_Juggling
 import time
+from PPO_agent.agent import train
+from PPO_agent.agent import test
 
 def main():
     # nn = 
@@ -12,6 +14,30 @@ def main():
     # agent.save_model('ppo_model.pth')
     env = gym.make('PandaJuggling-v0')
     ob = env.reset()
+
+    # Train or test, depending on the mode specified
+    mode = 'train'
+    # actor_model = "PPO_agent/ppo_actor.pth"
+    # critic_model = "PPO_agent/ppo_critic.pth"
+    actor_model = ""
+    critic_model = ""
+    # NOTE: Here's where you can set hyperparameters for PPO. I don't include them as part of
+    # ArgumentParser because it's too annoying to type them every time at command line. Instead, you can change them here.
+    # To see a list of hyperparameters, look in ppo.py at function _init_hyperparameters
+    hyperparameters = {
+          'timesteps_per_batch': 2048, 
+          'max_timesteps_per_episode': 200, 
+          'gamma': 0.99, 
+          'n_updates_per_iteration': 10,
+          'lr': 3e-4, 
+          'clip': 0.2,
+          'render': True,
+          'render_every_i': 10
+          }
+    if mode == 'train':
+      train(env=env, hyperparameters=hyperparameters, actor_model=actor_model, critic_model=critic_model)
+    else:
+      test(env=env, actor_model=actor_model)
 
     for i in range(1000): #will be changed to while True eventually
         #action = env.action_space.sample()

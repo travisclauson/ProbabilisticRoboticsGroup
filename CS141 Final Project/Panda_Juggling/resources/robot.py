@@ -11,7 +11,6 @@ class Robot:
         startPos = [0, 0, 0]
         startOrientation = p.getQuaternionFromEuler([0, 0, 0])
         f_name = os.path.join(os.path.dirname(__file__), 'franka_description/robots/panda_arm_hand.urdf')
-        print(f_name)
         self.robot = p.loadURDF(f_name, startPos, startOrientation, useFixedBase = 1)
         # self.numJoints = p.getNumJoints(self.robot, physicsClientId=self.client)
         self.numJoints = 9 #number of joints to end effector
@@ -20,7 +19,6 @@ class Robot:
     
     def apply_action(self, action):
         targetOrientation = p.getQuaternionFromEuler([0,0,0])
-        print(self.numJoints)
         targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, action)  
         p.setJointMotorControlArray(self.robot, range(self.numJoints), p.POSITION_CONTROL, targetPositions=targetPosJoints)
        # p.setJointMotorControl2(self.robot, 9, p.POSITION_CONTROL, grip1_targetPos)

@@ -14,7 +14,10 @@ class Ball:
 
     def get_observation(self):
         position = p.getBasePositionAndOrientation(self.ball, self.client)[0]
-        velocity = p.getBaseVelocity(self.ball, self.client)[0][0:2]
+        velocity = p.getBaseVelocity(self.ball, self.client)[0][0:3]
         observation = (position + velocity) # concatenate position and velocity
         
         return observation
+    
+    def get_ids(self):
+        return self.ball, self.client
