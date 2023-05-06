@@ -6,6 +6,7 @@ from Panda_Juggling.resources.ball import Ball
 from Panda_Juggling.resources.plane import Plane
 from Panda_Juggling.resources.robot import Robot
 import matplotlib.pyplot as plt
+# from gymnasium import spaces
 
 class PandaJugglingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -18,6 +19,8 @@ class PandaJugglingEnv(gym.Env):
         self.useRealTime = 0
         self.robot = None
         self.ball = None
+        self.action_space = gym.spaces.box.Box(0,1, dtype=np.float32)
+        self.observation_space = gym.spaces.box.Box(-10 ,10, dtype=np.float32)
         self.reset()
        
     def reset(self):
@@ -33,9 +36,12 @@ class PandaJugglingEnv(gym.Env):
         self.observation = self.ball.get_observation()
         return self.observation
     
-    def step(self, action = [0,0,0]):
+    def step(self, action):
         #hard code the action for now
-        action = p.getPositionAndOrientation(self.robot)[0] + [.01,0,0]
+        #action = p.getBasePositionAndOrientation(self.robot)[0] + [.01,0,0]
+        current_pos = self.robot.get_observation()[0]
+        print(current_pos)
+        action = [0.5,0.5,0.5] #current_pos + (.01,.02,.03)
         self.robot.apply_action(action)
         p.stepSimulation(physicsClientId=self.client)
         self.observation = self.ball.get_observation()
