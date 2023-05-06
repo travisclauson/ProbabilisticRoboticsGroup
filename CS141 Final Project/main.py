@@ -15,9 +15,11 @@ def main():
 
     for i in range(1000): #will be changed to while True eventually
         #action = env.action_space.sample()
-        action = [...] #hard code no action for now...
+        #action = agent(ob)
         #ob, reward, done, _ = env.step(action)
-        env.step(action)
+        
+        # For now, the action is hard coded in the environment
+        env.step() #will be changed to env.step(action)
         time.sleep(0.01)
         #if done:
           #  ob = env.reset()

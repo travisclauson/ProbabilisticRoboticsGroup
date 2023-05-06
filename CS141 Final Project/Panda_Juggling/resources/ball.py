@@ -9,7 +9,9 @@ class Ball:
         self.ball = p.loadURDF(fileName=f_name,
                         basePosition=[0, 0, 2], # adjust for starting position of ball
                         physicsClientId=client)
-    
+        # SET UP SO BOUNCING IS ENABLED --> restitution of 1 might be too much
+        p.changeDynamics(self.ball, -1, restitution=1.)
+
     def get_observation(self):
         position = p.getBasePositionAndOrientation(self.ball, self.client)[0]
         velocity = p.getBaseVelocity(self.ball, self.client)[0][0:2]

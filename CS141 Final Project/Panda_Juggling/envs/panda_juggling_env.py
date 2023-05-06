@@ -12,6 +12,12 @@ class PandaJugglingEnv(gym.Env):
 
     def __init__(self):
         self.client = p.connect(p.GUI)
+        self.np_random, _ = gym.utils.seeding.np_random()
+        p.setTimeStep(1/30, self.client)
+        p.setPhysicsEngineParameter(restitutionVelocityThreshold=0)
+        self.useRealTime = 0
+        self.robot = None
+        self.ball = None
         self.reset()
        
     def reset(self):
@@ -19,10 +25,9 @@ class PandaJugglingEnv(gym.Env):
         p.setGravity(0,0,-10, physicsClientId=self.client)
         p.setTimeStep(0.01, physicsClientId=self.client)
         p.setRealTimeSimulation(0, physicsClientId=self.client)
-        self.plane = Plane(self.client)
+        Plane(self.client)
         self.ball = Ball(self.client)
         self.robot = Robot(self.client)
-        #self.goal = Goal(self.client)
         self.done = False  
         self.reward = 0
         self.observation = self.ball.get_observation()
@@ -30,9 +35,10 @@ class PandaJugglingEnv(gym.Env):
     
     def step(self, action):
         self.robot.apply_action(action)
+        p.stepSimulation(physicsClientId=self.client)
         self.observation = self.ball.get_observation()
-        self.reward = self.get_reward()
-        self.done = self.get_done()
+        self.reward = 1
+        self.done = False
         return self.observation, self.reward, self.done, dict()
    
     def render(self, mode='human'):
@@ -40,7 +46,7 @@ class PandaJugglingEnv(gym.Env):
     
     def seed(self, seed=None):
         self.np_random, seed = gym.utils.seeding.np_random(seed)
-        pass
+        return [seed]
 
     def close(self):
         p.disconnect(self.client)
