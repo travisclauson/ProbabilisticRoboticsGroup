@@ -33,7 +33,9 @@ class PandaJugglingEnv(gym.Env):
         self.observation = self.ball.get_observation()
         return self.observation
     
-    def step(self, action):
+    def step(self, action = [0,0,0]):
+        #hard code the action for now
+        action = p.getPositionAndOrientation(self.robot)[0] + [.01,0,0]
         self.robot.apply_action(action)
         p.stepSimulation(physicsClientId=self.client)
         self.observation = self.ball.get_observation()
