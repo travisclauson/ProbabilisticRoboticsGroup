@@ -22,7 +22,7 @@ class PandaJugglingEnv(gym.Env):
         self.collision_count = 0
         self.action_space = gym.spaces.box.Box(low=np.array([-1,-1,0,-1,-1,-10,-1,-1,0]), high=np.array([1,1,1,1,1,10,1,1,1]), dtype=np.float32)
         self.observation_space = gym.spaces.box.Box(low=np.array([-1.0, -1.0]), high=np.array([1.0, 1.0]), dtype=np.float32)
-        self.observation_space = gym.spaces.box.Box(low=np.array([-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]), high=np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0]), dtype=np.float32)
+        self.observation_space = gym.spaces.box.Box(low=np.array([-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]), high=np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]), dtype=np.float32)
         self.reset()
        
     def reset(self):
@@ -35,7 +35,10 @@ class PandaJugglingEnv(gym.Env):
         self.robot = Robot(self.client)
         self.done = False  
         self.reward = 0
-        self.observation = self.ball.get_observation()
+        # self.observation = self.ball.get_observation()
+        self.robot_obs = self.robot.get_observation()
+        self.ball_obs = self.ball.get_observation()
+        self.observation = self.robot_obs + self.ball_obs
         return self.observation
     
     def step(self, action):
@@ -49,12 +52,12 @@ class PandaJugglingEnv(gym.Env):
         # the real code below used by agent
         self.robot.apply_action(action)
         p.stepSimulation(physicsClientId=self.client)   
-        robot_obs = self.robot.get_observation()
-        ball_obs = self.ball.get_observation()
-        self.observation = robot_obs + ball_obs
-        print("robot_obs: ", robot_obs)
-        print("ball_obs: ", ball_obs)
-        print("self.observation:",self.observation)
+        self.robot_obs = self.robot.get_observation()
+        self.ball_obs = self.ball.get_observation()
+        self.observation = self.robot_obs + self.ball_obs
+        # print("robot_obs: ", self.robot_obs)
+        # print("ball_obs: ", self.ball_obs)
+        # print("self.observation:",self.observation)
         self.reward = self.calculateReward(self.observation)
         self.done = False
         return self.observation, self.reward, self.done, dict()
