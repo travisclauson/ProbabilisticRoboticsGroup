@@ -187,21 +187,6 @@
         <mesh filename="pan_tefal.obj"/>
       </geometry>
     </visual>
-    <visual name="handle">
-      <geometry>
-        <cylinder length="0.185" radius="0.011"/>
-      </geometry>
-      <origin rpy="0 1.4 0" xyz="0.22 0 0.07"/>
-      <material name="stainless">
-        <color rgba="0.3 0.3 .3 1"/>
-      </material>
-    </visual>
-    <collision name="handle">
-      <geometry>
-        <cylinder length="0.185" radius="0.011"/>
-      </geometry>
-      <origin rpy="0 1.4 0" xyz="0.22 0 0.07"/>
-    </collision>
     <collision name="bottom">
       <geometry>
         <cylinder length="0.01" radius="0.12"/>

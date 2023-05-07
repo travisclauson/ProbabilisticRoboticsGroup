@@ -26,7 +26,6 @@ class FeedForwardNN(nn.Module):
 		super(FeedForwardNN, self).__init__()
 
 		self.layer1 = nn.Linear(in_dim, 64)
-		print(self.layer1)
 		self.layer2 = nn.Linear(64, 64)
 		self.layer3 = nn.Linear(64, out_dim)
 
@@ -47,7 +46,7 @@ class FeedForwardNN(nn.Module):
 		# 	temp_layer1 = torch.tensor(self.layer1(obs), dtype=torch.float)
 		# else:
 		# 	temp_layer1 = self.layer1(obs)
-		# print(obs)
+		# print("obs: ",obs)
 		temp_layer1 = self.layer1(obs)
 		activation1 = F.relu(temp_layer1)
 		activation2 = F.relu(self.layer2(activation1))

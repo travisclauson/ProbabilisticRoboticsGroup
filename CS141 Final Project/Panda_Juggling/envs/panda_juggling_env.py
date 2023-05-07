@@ -19,10 +19,10 @@ class PandaJugglingEnv(gym.Env):
         self.useRealTime = 0
         self.robot = None
         self.ball = None
+        self.plane = None
         self.collision_count = 0
-        self.action_space = gym.spaces.box.Box(low=np.array([-1,-1,0,-1,-1,-10,-1,-1,0]), high=np.array([1,1,1,1,1,10,1,1,1]), dtype=np.float32)
-        self.observation_space = gym.spaces.box.Box(low=np.array([-1.0, -1.0]), high=np.array([1.0, 1.0]), dtype=np.float32)
-        self.observation_space = gym.spaces.box.Box(low=np.array([-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]), high=np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]), dtype=np.float32)
+        self.action_space = gym.spaces.box.Box(low=np.array([-1,-1]), high=np.array([1,1]), dtype=np.float32)
+        self.observation_space = gym.spaces.box.Box(low=np.array([-1,-1,0,-1,-1,-10,-1,-1,0]), high=np.array([1,1,1,1,1,10,1,1,1]), dtype=np.float32)
         self.reset()
        
     def reset(self):
@@ -33,6 +33,7 @@ class PandaJugglingEnv(gym.Env):
         Plane(self.client)
         self.ball = Ball(self.client)
         self.robot = Robot(self.client)
+        self.plane = Plane(self.client)
         self.done = False  
         self.reward = 0
         # self.observation = self.ball.get_observation()
@@ -44,10 +45,10 @@ class PandaJugglingEnv(gym.Env):
     def step(self, action):
         #hard code the action for now
         # apply_action() requires parameter of type list
-        current_pos = self.robot.get_observation()[0]
-        np_current = np.asarray(current_pos)
-        np_action = np_current + np.array([0.01,0.01,0.01])
-        action = np_action.tolist()
+        # current_pos = self.robot.get_observation()[0]
+        # np_current = np.asarray(current_pos)
+        # np_action = np_current + np.array([0.01,0.01,0.01])
+        # action = np_action.tolist()
 
         # the real code below used by agent
         self.robot.apply_action(action)
@@ -56,10 +57,17 @@ class PandaJugglingEnv(gym.Env):
         self.ball_obs = self.ball.get_observation()
         self.observation = self.robot_obs + self.ball_obs
         # print("robot_obs: ", self.robot_obs)
-        # print("ball_obs: ", self.ball_obs)
+        # print("ball_obs: ", self.ball_obs[0],self.ball_obs[1],self.ball_obs[2])
         # print("self.observation:",self.observation)
-        self.reward = self.calculateReward(self.observation)
-        self.done = False
+
+        ball_grounded = p.getContactPoints(self.plane.get_ids()[0],self.ball.get_ids()[0])
+        if(ball_grounded != ()):
+            self.done = True
+        if((self.ball_obs[0] > 1) or (self.ball_obs[0] < -1) or (self.ball_obs[1] > 1) or (self.ball_obs[1] < -1) or (self.ball_obs[2] < 0.05)):
+            self.done = True
+        else:
+            self.reward = self.calculateReward(self.observation)
+            self.done = False
         return self.observation, self.reward, self.done, dict()
    
     def render(self, mode='human'):
@@ -77,13 +85,13 @@ class PandaJugglingEnv(gym.Env):
         threshold = 0.2
 
         # need the collision observation and the x-y coordinates of the ball nad the end effector
-        distance = math.sqrt((observation[0] - observation[7])**2 + (observation[1] - observation[8])**2)
+        distance = math.sqrt((observation[0] - observation[3])**2 + (observation[1] - observation[4])**2)
         if distance > threshold :
             reward = 0
         else:
             reward = 1 - (distance/threshold)
 
-        curr_contact = p.getContactPoints(self.robot.get_ids()[0],self.ball.get_ids()[0])
+        curr_contact = p.getContactPoints(bodyA=self.robot.get_ids()[0],bodyB=self.ball.get_ids()[0],linkIndexA=10)
         if(curr_contact != ()):
             reward += 10
             self.collision_count += 1

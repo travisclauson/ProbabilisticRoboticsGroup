@@ -42,7 +42,7 @@ class PPO:
 		self.env = env
 		self.obs_dim = env.observation_space.shape[0]
 		self.act_dim = env.action_space.shape[0]
-		print(self.obs_dim, self.act_dim)
+		# print(self.obs_dim, self.act_dim)
 
 		 # Initialize actor and critic networks
 		self.actor = policy_class(self.obs_dim, self.act_dim)                                                   # ALG STEP 1
@@ -219,13 +219,7 @@ class PPO:
 			batch_rews.append(ep_rews)
 
 		# Reshape data as tensors in the shape specified in function description, before returning
-		# batch_obs.remove(batch_obs[0])
-		for obs in batch_obs:
-			if isinstance(obs,tuple):
-				temp_batch_obs.append(obs[0])
-			elif obs.size == 3:
-				temp_batch_obs.append(obs)
-		batch_obs = torch.tensor(temp_batch_obs, dtype=torch.float)
+		batch_obs = torch.tensor(batch_obs, dtype=torch.float)
 		batch_acts = torch.tensor(batch_acts, dtype=torch.float)
 		batch_log_probs = torch.tensor(batch_log_probs, dtype=torch.float)
 		batch_rtgs = self.compute_rtgs(batch_rews)                                                              # ALG STEP 4

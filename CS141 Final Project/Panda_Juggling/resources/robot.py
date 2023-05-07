@@ -19,12 +19,16 @@ class Robot:
         self.robot = p.loadURDF(f_name, startPos, startOrientation, useFixedBase = 1)
         # self.numJoints = p.getNumJoints(self.robot, physicsClientId=self.client)
         self.numJoints = 9 #number of joints to end effector
+
+        targetOrientation = p.getQuaternionFromEuler([0,0,0])
+        targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, [0.1, 0.1, .5], targetOrientation=targetOrientation)  
+        p.setJointMotorControlArray(self.robot, range(7), p.POSITION_CONTROL, targetPositions=targetPosJoints)
     def get_ids(self):
         return self.robot, self.client
     
     def apply_action(self, action):
         targetOrientation = p.getQuaternionFromEuler([0,0,0])
-        targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, action)  
+        targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, [action[0], action[1], .5], targetOrientation=targetOrientation)  
         p.setJointMotorControlArray(self.robot, range(7), p.POSITION_CONTROL, targetPositions=targetPosJoints)
 
     def get_observation(self):
@@ -49,3 +53,5 @@ class Robot:
 #             _redirect_stdout(to=old_stdout)  # restore stdout.
 #             # buffering and flags such as
 #             # CLOEXEC may be different
+
+    
