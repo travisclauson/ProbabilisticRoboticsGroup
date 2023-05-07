@@ -20,9 +20,7 @@ class Robot:
     def apply_action(self, action):
         targetOrientation = p.getQuaternionFromEuler([0,0,0])
         targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, action)  
-        p.setJointMotorControlArray(self.robot, range(self.numJoints), p.POSITION_CONTROL, targetPositions=targetPosJoints)
-       # p.setJointMotorControl2(self.robot, 9, p.POSITION_CONTROL, grip1_targetPos)
-       # p.setJointMotorControl2(self.robot, 10, p.POSITION_CONTROL, grip2_targetPos)
+        p.setJointMotorControlArray(self.robot, range(7), p.POSITION_CONTROL, targetPositions=targetPosJoints)
 
     def get_observation(self):
         return p.getLinkState(self.robot,9,0,1)[0]
