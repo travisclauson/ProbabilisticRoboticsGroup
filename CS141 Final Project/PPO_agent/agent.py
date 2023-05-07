@@ -66,6 +66,10 @@ def test(env, actor_model):
 	"""
 	print(f"Testing {actor_model}", flush=True)
 
+	for i in range(100): #will be changed to while True eventually
+		env.step(action= [0.2,0.2,0.5])
+		time.sleep(0.01)
+
 	# If the actor model is not specified, then exit
 	if actor_model == '':
 		print(f"Didn't specify model file. Exiting.", flush=True)

@@ -78,6 +78,7 @@ class PPO:
 		"""
 		print(f"Learning... Running {self.max_timesteps_per_episode} timesteps per episode, ", end='')
 		print(f"{self.timesteps_per_batch} timesteps per batch for a total of {total_timesteps} timesteps")
+
 		t_so_far = 0 # Timesteps simulated so far
 		i_so_far = 0 # Iterations ran so far
 		while t_so_far < total_timesteps:                                                                       # ALG STEP 2
@@ -189,8 +190,12 @@ class PPO:
 			obs = self.env.reset()
 			done = False
 
+			for i in range(100): #will be changed to while True eventually
+				self.env.step(action= [0.2,0.2,0.5])
+				time.sleep(0.01)
+
 			# Run an episode for a maximum of max_timesteps_per_episode timesteps
-			for ep_t in range(self.max_timesteps_per_episode):
+			for ep_t in range(self.max_timesteps_per_episode):			
 				# If render is specified, render the environment
 				if self.render and (self.logger['i_so_far'] % self.render_every_i == 0) and len(batch_lens) == 0:
 					self.env.render()
@@ -204,6 +209,7 @@ class PPO:
 				# Note that rew is short for reward.
 				action, log_prob = self.get_action(obs)
 				obs, rew, done, truncated  = self.env.step(action)
+				time.sleep(0.01)
 
 				# Track recent reward, action, and action log probability
 				ep_rews.append(rew)

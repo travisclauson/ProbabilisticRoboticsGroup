@@ -15,8 +15,12 @@ def main():
     env = gym.make('PandaJuggling-v0')
     ob = env.reset()
 
+    for i in range(100): #will be changed to while True eventually
+        env.step(action= [0.2,0.2,0.5])
+        time.sleep(0.01)
+
     # Train or test, depending on the mode specified
-    mode = 'test'
+    mode = 'train'
     actor_model = "ppo_actor.pth"
     critic_model = "ppo_critic.pth"
     # actor_model = ""
