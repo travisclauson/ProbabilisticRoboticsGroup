@@ -25,5 +25,4 @@ class Robot:
        # p.setJointMotorControl2(self.robot, 10, p.POSITION_CONTROL, grip2_targetPos)
 
     def get_observation(self):
-        # return ("EMPTY CODE")
-        return p.getBasePositionAndOrientation(self.robot, self.client)
+        return p.getLinkState(self.robot,9,0,1)[0]

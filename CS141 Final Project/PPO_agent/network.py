@@ -26,6 +26,7 @@ class FeedForwardNN(nn.Module):
 		super(FeedForwardNN, self).__init__()
 
 		self.layer1 = nn.Linear(in_dim, 64)
+		print(self.layer1)
 		self.layer2 = nn.Linear(64, 64)
 		self.layer3 = nn.Linear(64, out_dim)
 
@@ -40,12 +41,14 @@ class FeedForwardNN(nn.Module):
 				output - the output of our forward pass
 		"""
 		# Convert observation to tensor if it's a numpy array
-		if isinstance(obs, np.ndarray):
-			obs = torch.tensor(obs, dtype=torch.float)
-		if isinstance(self.layer1(obs),tuple):
-			temp_layer1 = torch.tensor(self.layer1(obs), dtype=torch.float)
-		else:
-			temp_layer1 = self.layer1(obs)
+		# if isinstance(obs, np.ndarray):
+		# 	obs = torch.tensor(obs, dtype=torch.float)
+		# if isinstance(self.layer1(obs),tuple):
+		# 	temp_layer1 = torch.tensor(self.layer1(obs), dtype=torch.float)
+		# else:
+		# 	temp_layer1 = self.layer1(obs)
+		# print(obs)
+		temp_layer1 = self.layer1(obs)
 		activation1 = F.relu(temp_layer1)
 		activation2 = F.relu(self.layer2(activation1))
 		output = self.layer3(activation2)
