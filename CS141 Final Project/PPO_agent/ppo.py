@@ -190,7 +190,8 @@ class PPO:
 			obs = self.env.reset()
 			done = False
 
-			for i in range(100): #will be changed to while True eventually
+			# Pan is hardcoded to an initialization location for first 100 time steps
+			for i in range(100):
 				self.env.step(action= [0.2,0.2,0,0,0])
 				time.sleep(0.01)
 
