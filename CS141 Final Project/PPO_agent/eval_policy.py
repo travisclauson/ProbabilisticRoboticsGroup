@@ -28,7 +28,7 @@ def _log_summary(ep_len, ep_ret, ep_num):
 		print(f"------------------------------------------------------", flush=True)
 		print(flush=True)
 
-def rollout(policy, env, render):
+def rollout(policy, env, render, ep_num):
 	"""
 		Returns a generator to roll out each episode given a trained policy and
 		environment to test on. 
@@ -49,7 +49,8 @@ def rollout(policy, env, render):
 				https://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do
 	"""
 	# Rollout until user kills process
-	while True:
+	i=0
+	for i in range(ep_num):
 		obs = env.reset()
 		done = False
 

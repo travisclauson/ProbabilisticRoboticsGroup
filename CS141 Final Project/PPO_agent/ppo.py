@@ -14,6 +14,9 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 from torch.distributions import MultivariateNormal
+from pathlib import Path
+import os
+
 
 class PPO:
 	"""
@@ -66,7 +69,7 @@ class PPO:
 			'actor_losses': [],     # losses of actor network in current iteration
 		}
 
-	def learn(self, total_timesteps):
+	def learn(self, total_timesteps, writeToFile = False):
 		"""
 			Train the actor and critic networks. Here is where the main PPO algorithm resides.
 
@@ -78,12 +81,30 @@ class PPO:
 		"""
 		print(f"Learning... Running {self.max_timesteps_per_episode} timesteps per episode, ", end='')
 		print(f"{self.timesteps_per_batch} timesteps per batch for a total of {total_timesteps} timesteps")
+		
+		# Write to file if specified
+		if writeToFile:
+			fileDescriptor = f"Reward Log - {time.ctime()}.txt"
+			path = os.path.join(Path.home(), "Downloads", "CS141-Final-Logs")
+			try:
+				os.makedirs(path, exist_ok=True)
+				fileName = os.path.join(path, fileDescriptor)
+				f = open(fileName, "a")
+				f.write(f"Learning... Running {self.max_timesteps_per_episode} timesteps per episode, ")
+				f.write(f"{self.timesteps_per_batch} timesteps per batch for a total of {total_timesteps} timesteps\n")
+				f.close()
+			except:
+				fileName = None
+				print("ERROR CREATING FILE")
+		else:
+			fileName = None
+		
 
 		t_so_far = 0 # Timesteps simulated so far
 		i_so_far = 0 # Iterations ran so far
 		while t_so_far < total_timesteps:                                                                       # ALG STEP 2
 			# Autobots, roll out (just kidding, we're collecting our batch simulations here)
-			batch_obs, batch_acts, batch_log_probs, batch_rtgs, batch_lens = self.rollout()                     # ALG STEP 3
+			batch_obs, batch_acts, batch_log_probs, batch_rtgs, batch_lens = self.rollout(fileName)                     # ALG STEP 3
 
 			# Calculate how many timesteps we collected this batch
 			t_so_far += np.sum(batch_lens)
@@ -143,15 +164,16 @@ class PPO:
 				# Log actor loss
 				self.logger['actor_losses'].append(actor_loss.detach())
 
-			# Print a summary of our training so far
-			self._log_summary()
+			
+			# Print a summary of our training so far (if fileName = None, we're not writing to a file)
+			self._log_summary(fileName)
 
 			# Save our model if it's time
 			if i_so_far % self.save_freq == 0:
 				torch.save(self.actor.state_dict(), './ppo_actor.pth')
 				torch.save(self.critic.state_dict(), './ppo_critic.pth')
 
-	def rollout(self):
+	def rollout(self, fileName=None):
 		"""
 			Too many transformers references, I'm sorry. This is where we collect the batch of data
 			from simulation. Since this is an on-policy algorithm, we'll need to collect a fresh batch
@@ -194,10 +216,12 @@ class PPO:
 			for i in range(100):
 				self.env.step(action= [0.2,0.2,0,0,0])
 				time.sleep(0.01)
+			print(f"\n\n ----Episode Number---- \n    {len(batch_rews)} \n\n")
 
 			# Run an episode for a maximum of max_timesteps_per_episode timesteps
 			for ep_t in range(self.max_timesteps_per_episode):			
 				# If render is specified, render the environment
+
 				if self.render and (self.logger['i_so_far'] % self.render_every_i == 0) and len(batch_lens) == 0:
 					self.env.render()
 
@@ -350,6 +374,7 @@ class PPO:
 		self.render_every_i = 10                     	# Only render every n iterations
 		self.save_freq = 10                     		# How often we save in number of iterations
 		self.seed = None                                # Sets the seed of our program, used for reproducibility of results
+		self.train_verbose = False							# If we should print reward summaries
 
 		# Change any default values to custom values for specified hyperparameters
 		for param, val in hyperparameters.items():
@@ -364,7 +389,7 @@ class PPO:
 			torch.manual_seed(self.seed)
 			print(f"Successfully set seed to {self.seed}")
 
-	def _log_summary(self):
+	def _log_summary(self,fileName=None):
 		"""
 			Print to stdout what we've logged so far in the most recent batch.
 
@@ -404,6 +429,20 @@ class PPO:
 		print(f"------------------------------------------------------", flush=True)
 		print(flush=True)
 
+		if fileName is not None:
+			try:
+				f = open(fileName, "a")
+				f.write(f"-------------------- Iteration #{i_so_far} --------------------")
+				f.write(f"Average Episodic Length: {avg_ep_lens}")
+				f.write(f"Average Episodic Return: {avg_ep_rews}")
+				f.write(f"Average Loss: {avg_actor_loss}")
+				f.write(f"Timesteps So Far: {t_so_far}")
+				f.write(f"Iteration took: {delta_t} secs")
+				f.write(f"------------------------------------------------------")
+				f.close()
+			except:
+				print("Error writing to file")
+				
 		# Reset batch-specific logging data
 		self.logger['batch_lens'] = []
 		self.logger['batch_rews'] = []

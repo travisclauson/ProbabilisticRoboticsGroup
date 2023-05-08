@@ -7,18 +7,12 @@ from PPO_agent.agent import train
 from PPO_agent.agent import test
 
 def main():
-    # nn = 
     # agent = PPOAgent(policy=nn)
     # agent.load_model('ppo_model.pth')
     # agent.train(Panda_Juggling-v0, seed=0, batch_size=5000, iterations=100, max_episode_length=250, verbose=True))
     # agent.save_model('ppo_model.pth')
     env = gym.make('PandaJuggling-v0')
     ob = env.reset()
-
-    # Pan is hardcoded to an initialization location for first 100 time steps
-    for i in range(100): 
-        env.step(action= [0.2,0.2,0,0,0])
-        time.sleep(0.01)
 
 ## ----------------- RL MODE ----------------- ##
     # 'train' will train a new model. 'test' will test a saved model.
@@ -42,25 +36,21 @@ def main():
           'n_updates_per_iteration': 10,
           'lr': 3e-4, #
           'clip': 0.2,
-          'render': True,
-          'render_every_i': 10
+          'render': False,
+          'render_every_i': 100,
+          'train_verbose': False,
+          'save_freq': 1,
           }
     if mode == 'train':
-      train(env=env, hyperparameters=hyperparameters, actor_model=actor_model, critic_model=critic_model)
+      train(env=env, hyperparameters=hyperparameters, actor_model=actor_model, critic_model=critic_model, writeToFile=True)
     else:
       test(env=env, actor_model=actor_model)
 
-    for i in range(1000): #will be changed to while True eventually
-        #action = env.action_space.sample()
-        #action = agent(ob)
-        #ob, reward, done, _ = env.step(action)
-        
-        # For now, the action is hard coded in the environment
-        env.step(action= [0.2,0.2,0,0,0]) #will be changed to env.step(action)
-        time.sleep(0.01)
-        #if done:
-          #  ob = env.reset()
-    env.close()
+    env.reset()
+    while(True): #will be changed to while True eventually
+        test(env=env, actor_model="ppo_actor.pth", render = True)
+
+
 
 
 if __name__ == '__main__':

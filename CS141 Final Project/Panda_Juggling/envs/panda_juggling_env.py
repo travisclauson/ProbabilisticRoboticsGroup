@@ -12,7 +12,7 @@ class PandaJugglingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        self.client = p.connect(p.GUI)
+        self.client = p.connect(p.DIRECT)
         self.np_random, _ = gym.utils.seeding.np_random()
         p.setTimeStep(1/30, self.client)
         p.setPhysicsEngineParameter(restitutionVelocityThreshold=0)
@@ -51,12 +51,12 @@ class PandaJugglingEnv(gym.Env):
         # action = np_action.tolist()
 
         # the real code below used by agent
-        print(action)
+        #print(action)
         self.robot.apply_action(action)
         p.stepSimulation(physicsClientId=self.client)   
         self.robot_obs = self.robot.get_observation()
         self.ball_obs = self.ball.get_observation()
-        self.observation = self.robot_obs + self.ball_obs
+        self.observation = self.robot_obs + self.ball_obs #concatenate robot and ball observations
         # print("robot_obs: ", self.robot_obs)
         # print("ball_obs: ", self.ball_obs[0],self.ball_obs[1],self.ball_obs[2])
         # print("self.observation:",self.observation)
