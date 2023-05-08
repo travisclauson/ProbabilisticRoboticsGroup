@@ -53,7 +53,7 @@ def train(env, hyperparameters, actor_model, critic_model, writeToFile = False):
 	# you can kill the process whenever you feel like PPO is converging
 	model.learn(total_timesteps=200_000, writeToFile = writeToFile)
 
-def test(env, actor_model, render=True):
+def test(env, actor_model, num_episodes=10, render=True):
 	"""
 		Tests the model.
 
@@ -89,7 +89,7 @@ def test(env, actor_model, render=True):
 	# that once we are done training the model/policy with ppo.py, we no longer need
 	# ppo.py since it only contains the training algorithm. The model/policy itself exists
 	# independently as a binary file that can be loaded in with torch.
-	eval_policy(policy=policy, env=env, render=render)
+	eval_policy(policy=policy, env=env, num_episodes=num_episodes, render=render)
 
 # def main(args):
 # 	"""

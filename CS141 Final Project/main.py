@@ -7,16 +7,9 @@ from PPO_agent.agent import train
 from PPO_agent.agent import test
 
 def main():
-    # agent = PPOAgent(policy=nn)
-    # agent.load_model('ppo_model.pth')
-    # agent.train(Panda_Juggling-v0, seed=0, batch_size=5000, iterations=100, max_episode_length=250, verbose=True))
-    # agent.save_model('ppo_model.pth')
-    env = gym.make('PandaJuggling-v0')
-    ob = env.reset()
-
 ## ----------------- RL MODE ----------------- ##
     # 'train' will train a new model. 'test' will test a saved model.
-    mode = 'train'
+    mode = 'test'
 
 ## ----------------- Actor/Critic ----------------- ##
     # Start New or Use Saved actor/critic model
@@ -36,20 +29,22 @@ def main():
           'n_updates_per_iteration': 10,
           'lr': 3e-4, #
           'clip': 0.2,
-          'render': False,
-          'render_every_i': 100,
+          'render': True, #controls whether to render the environment or not
+          'render_every_i': 1,
           'train_verbose': False,
           'save_freq': 1,
           }
-    if mode == 'train':
-      train(env=env, hyperparameters=hyperparameters, actor_model=actor_model, critic_model=critic_model, writeToFile=True)
-    else:
-      test(env=env, actor_model=actor_model)
-
+    
+    env = gym.make('PandaJuggling-v0')
     env.reset()
-    while(True): #will be changed to while True eventually
-        test(env=env, actor_model="ppo_actor.pth", render = True)
-
+    if mode == 'train':
+        train(env=env, hyperparameters=hyperparameters, actor_model=actor_model, critic_model=critic_model, writeToFile=True)
+    # else:
+    #   test(env=env, actor_model="ppo_actor.pth", render = True, num_episodes=10)
+    
+    env.reset()
+    test(env=env, actor_model="ppo_actor.pth", num_episodes=10)
+    env.close()
 
 
 

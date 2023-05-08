@@ -104,7 +104,7 @@ class PPO:
 		i_so_far = 0 # Iterations ran so far
 		while t_so_far < total_timesteps:                                                                       # ALG STEP 2
 			# Autobots, roll out (just kidding, we're collecting our batch simulations here)
-			batch_obs, batch_acts, batch_log_probs, batch_rtgs, batch_lens = self.rollout(fileName)                     # ALG STEP 3
+			batch_obs, batch_acts, batch_log_probs, batch_rtgs, batch_lens = self.rollout_train(fileName)                     # ALG STEP 3
 
 			# Calculate how many timesteps we collected this batch
 			t_so_far += np.sum(batch_lens)
@@ -173,7 +173,7 @@ class PPO:
 				torch.save(self.actor.state_dict(), './ppo_actor.pth')
 				torch.save(self.critic.state_dict(), './ppo_critic.pth')
 
-	def rollout(self, fileName=None):
+	def rollout_train(self, fileName=None):
 		"""
 			Too many transformers references, I'm sorry. This is where we collect the batch of data
 			from simulation. Since this is an on-policy algorithm, we'll need to collect a fresh batch
@@ -215,7 +215,6 @@ class PPO:
 			# Pan is hardcoded to an initialization location for first 100 time steps
 			for i in range(100):
 				self.env.step(action= [0.2,0.2,0,0,0])
-				time.sleep(0.01)
 			print(f"\n\n ----Episode Number---- \n    {len(batch_rews)} \n\n")
 
 			# Run an episode for a maximum of max_timesteps_per_episode timesteps
@@ -234,7 +233,7 @@ class PPO:
 				# Note that rew is short for reward.
 				action, log_prob = self.get_action(obs)
 				obs, rew, done, truncated  = self.env.step(action)
-				time.sleep(0.01)
+				#time.sleep(0.01)
 
 				# Track recent reward, action, and action log probability
 				ep_rews.append(rew)
