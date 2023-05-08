@@ -16,15 +16,15 @@ def main():
     ob = env.reset()
 
     for i in range(100): #will be changed to while True eventually
-        env.step(action= [0.2,0.2,0.5])
+        env.step(action= [0.2,0.2,0,0,0])
         time.sleep(0.01)
 
     # Train or test, depending on the mode specified
     mode = 'train'
-    actor_model = "ppo_actor.pth"
-    critic_model = "ppo_critic.pth"
-    # actor_model = ""
-    # critic_model = ""
+    # actor_model = "ppo_actor.pth"
+    # critic_model = "ppo_critic.pth"
+    actor_model = ""
+    critic_model = ""
     # NOTE: Here's where you can set hyperparameters for PPO. I don't include them as part of
     # ArgumentParser because it's too annoying to type them every time at command line. Instead, you can change them here.
     # To see a list of hyperparameters, look in ppo.py at function _init_hyperparameters
@@ -49,7 +49,7 @@ def main():
         #ob, reward, done, _ = env.step(action)
         
         # For now, the action is hard coded in the environment
-        env.step(action= [0,0,0]) #will be changed to env.step(action)
+        env.step(action= [0.2,0.2,0,0,0]) #will be changed to env.step(action)
         time.sleep(0.01)
         #if done:
           #  ob = env.reset()

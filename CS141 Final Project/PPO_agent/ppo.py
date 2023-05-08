@@ -191,7 +191,7 @@ class PPO:
 			done = False
 
 			for i in range(100): #will be changed to while True eventually
-				self.env.step(action= [0.2,0.2,0.5])
+				self.env.step(action= [0.2,0.2,0,0,0])
 				time.sleep(0.01)
 
 			# Run an episode for a maximum of max_timesteps_per_episode timesteps

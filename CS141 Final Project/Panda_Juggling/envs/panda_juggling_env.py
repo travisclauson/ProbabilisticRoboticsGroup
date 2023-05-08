@@ -21,7 +21,7 @@ class PandaJugglingEnv(gym.Env):
         self.ball = None
         self.plane = None
         self.collision_count = 0
-        self.action_space = gym.spaces.box.Box(low=np.array([-1,-1]), high=np.array([1,1]), dtype=np.float32)
+        self.action_space = gym.spaces.box.Box(low=np.array([-1,-1,-2*np.pi,-2*np.pi,-2*np.pi]), high=np.array([1,1,2*np.pi,2*np.pi,2*np.pi]), dtype=np.float32)
         self.observation_space = gym.spaces.box.Box(low=np.array([-1,-1,0,-1,-1,-10,-1,-1,0]), high=np.array([1,1,1,1,1,10,1,1,1]), dtype=np.float32)
         self.reset()
        
@@ -51,6 +51,7 @@ class PandaJugglingEnv(gym.Env):
         # action = np_action.tolist()
 
         # the real code below used by agent
+        print(action)
         self.robot.apply_action(action)
         p.stepSimulation(physicsClientId=self.client)   
         self.robot_obs = self.robot.get_observation()

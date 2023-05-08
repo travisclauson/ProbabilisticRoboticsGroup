@@ -28,7 +28,7 @@ class Robot:
         return self.robot, self.client
     
     def apply_action(self, action):
-        targetOrientation = p.getQuaternionFromEuler([0,0,0])
+        targetOrientation = p.getQuaternionFromEuler([action[2], action[3], action[4]])
         targetPosJoints = p.calculateInverseKinematics(self.robot, self.numJoints, [action[0], action[1], .5], targetOrientation=targetOrientation)  
         p.setJointMotorControlArray(self.robot, range(7), p.POSITION_CONTROL, targetPositions=targetPosJoints)
 
