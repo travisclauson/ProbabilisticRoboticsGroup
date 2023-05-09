@@ -49,9 +49,9 @@ def train(env, hyperparameters, actor_model, critic_model, writeToFile = True):
 		print(f"Training from scratch.", flush=True)
 
 	# Train the PPO model with a specified total timesteps
-	# NOTE: You can change the total timesteps here, I put a big number just because
-	# you can kill the process whenever you feel like PPO is converging
-	model.learn(total_timesteps=hyperparameters['total_timesteps'], writeToFile = writeToFile)
+	# Returns the fileName of the reward log
+	rewardLog = model.learn(total_timesteps=hyperparameters['total_timesteps'], writeToFile = writeToFile)
+	return rewardLog
 
 def test(env, actor_model, num_episodes=10, render=True):
 	"""
