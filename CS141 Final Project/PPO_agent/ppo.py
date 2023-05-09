@@ -64,6 +64,7 @@ class PPO:
 			'delta_t': time.time_ns(),
 			't_so_far': 0,          # timesteps so far
 			'i_so_far': 0,          # iterations so far
+			'e_so_far': 0,          # episodes so far
 			'batch_lens': [],       # episodic lengths in batch
 			'batch_rews': [],       # episodic returns in batch
 			'actor_losses': [],     # losses of actor network in current iteration
@@ -84,14 +85,16 @@ class PPO:
 		
 		# Write to file if specified
 		if writeToFile:
-			fileDescriptor = f"Reward Log - {time.ctime()}.txt"
-			path = os.path.join(Path.home(), "Downloads", "CS141-Final-Logs")
+			fileDescriptor = f"{time.ctime()}.txt"
+			path = os.path.join(Path.home(), "Downloads", "CS141-Rewards-Logs")
 			try:
 				os.makedirs(path, exist_ok=True)
 				fileName = os.path.join(path, fileDescriptor)
 				f = open(fileName, "a")
-				f.write(f"Learning... Running {self.max_timesteps_per_episode} timesteps per episode, ")
-				f.write(f"{self.timesteps_per_batch} timesteps per batch for a total of {total_timesteps} timesteps\n")
+				f.write(f"Learning... Timesteps Per Episode: {self.max_timesteps_per_episode}     ")
+				f.write(f"Timesteps Per Batch{self.timesteps_per_batch}     TOTAL TIMESTEPS IN TRAINING: {total_timesteps}\n")
+				f.write(f"Hyperparameters: {self.hyperparameters}\n")
+				f.write(f"\n\nBatch Number, Average Reward, Average Timesteps per Episode, Average Actor Loss\n")
 				f.close()
 			except:
 				fileName = None
@@ -101,7 +104,8 @@ class PPO:
 		
 
 		t_so_far = 0 # Timesteps simulated so far
-		i_so_far = 0 # Iterations ran so far
+		e_so_far = 0 # Episodes simulated so far
+		i_so_far = 0 # Iterations/Batches ran so far
 		while t_so_far < total_timesteps:                                                                       # ALG STEP 2
 			# Autobots, roll out (just kidding, we're collecting our batch simulations here)
 			batch_obs, batch_acts, batch_log_probs, batch_rtgs, batch_lens = self.rollout_train(fileName)                     # ALG STEP 3
@@ -109,12 +113,16 @@ class PPO:
 			# Calculate how many timesteps we collected this batch
 			t_so_far += np.sum(batch_lens)
 
+			# Increment the number of episodes simulated this batch
+			e_so_far += len(batch_lens)
+
 			# Increment the number of iterations
 			i_so_far += 1
 
 			# Logging timesteps so far and iterations so far
 			self.logger['t_so_far'] = t_so_far
 			self.logger['i_so_far'] = i_so_far
+			self.logger['e_so_far'] = e_so_far
 
 			# Calculate advantage at k-th iteration
 			V, _ = self.evaluate(batch_obs, batch_acts)
@@ -172,6 +180,13 @@ class PPO:
 			if i_so_far % self.save_freq == 0:
 				torch.save(self.actor.state_dict(), './ppo_actor.pth')
 				torch.save(self.critic.state_dict(), './ppo_critic.pth')
+		
+		# Print a final summary of our training
+		f = open(fileName, "a")
+		f.write(f"\n\n Total Timesteps: {t_so_far} \n")
+		f.write(f"Total Episodes: {e_so_far} \n")
+		f.write(f"Total Iterations/Batches: {i_so_far} \n")
+		f.close()
 
 	def rollout_train(self, fileName=None):
 		"""
@@ -215,7 +230,9 @@ class PPO:
 			# Pan is hardcoded to an initialization location for first 100 time steps
 			for i in range(100):
 				self.env.step(action= [0.2,0.2,0,0,0])
-			print(f"\n\n ----Episode Number---- \n    {len(batch_rews)} \n\n")
+			print(f"\n\n\n ---- Batch Number {self.logger['i_so_far']}----")
+			print(f"---- Episode Number {len(batch_rews)} ----\n\n\n")
+
 
 			# Run an episode for a maximum of max_timesteps_per_episode timesteps
 			for ep_t in range(self.max_timesteps_per_episode):			
@@ -408,6 +425,7 @@ class PPO:
 
 		t_so_far = self.logger['t_so_far']
 		i_so_far = self.logger['i_so_far']
+		e_so_far = self.logger['e_so_far']
 		avg_ep_lens = np.mean(self.logger['batch_lens'])
 		avg_ep_rews = np.mean([np.sum(ep_rews) for ep_rews in self.logger['batch_rews']])
 		avg_actor_loss = np.mean([losses.float().mean() for losses in self.logger['actor_losses']])
@@ -431,13 +449,7 @@ class PPO:
 		if fileName is not None:
 			try:
 				f = open(fileName, "a")
-				f.write(f"-------------------- Iteration #{i_so_far} --------------------")
-				f.write(f"Average Episodic Length: {avg_ep_lens}")
-				f.write(f"Average Episodic Return: {avg_ep_rews}")
-				f.write(f"Average Loss: {avg_actor_loss}")
-				f.write(f"Timesteps So Far: {t_so_far}")
-				f.write(f"Iteration took: {delta_t} secs")
-				f.write(f"------------------------------------------------------")
+				f.write(f"{i_so_far}, {avg_ep_lens}, {avg_ep_rews}, {avg_actor_loss}\n")
 				f.close()
 			except:
 				print("Error writing to file")
