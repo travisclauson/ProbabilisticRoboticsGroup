@@ -25,12 +25,12 @@ def main():
     # ArgumentParser because it's too annoying to type them every time at command line. Instead, you can change them here.
     # To see a list of hyperparameters, look in ppo.py at function _init_hyperparameters
     hyperparameters = {
-          'total_timesteps': 400_000, 
-          'timesteps_per_batch': 4_000, 
+          'total_timesteps': 10_000_000, 
+          'timesteps_per_batch': 5_000, 
           'max_timesteps_per_episode': 2_000, 
-          'gamma': 0.99, 
+          'gamma': 0.90, 
           'n_updates_per_iteration': 10,
-          'lr': 3e-4, #
+          'lr': .01, 
           'clip': 0.2,
           'render': False, #controls whether to render the environment or not
           'render_every_i': 1,
@@ -53,10 +53,13 @@ def main():
 ## ----------------- FINAL LOGS ----------------- ##
     endTime = time.time()
     totalTime = endTime - beginTime
-    print(f"Total time: {totalTime/60} minutes {totalTime%60} seconds")
-    f = open(rewardLog, "a")
-    f.write(f"\nTotal time: {totalTime/60} minutes {totalTime%60} seconds")
-    f.close()
+    print(f"Total time: {int(totalTime/60)} minutes {int(totalTime%60)} seconds")
+    try:
+      f = open(rewardLog, "a")
+      f.write(f"\nTotal time: {int(totalTime/60)} minutes {int(totalTime%60)} seconds")
+      f.close()
+    except:
+      print("Failed to write to file")
 
 
 

@@ -91,7 +91,7 @@ class PPO:
 				os.makedirs(path, exist_ok=True)
 				fileName = os.path.join(path, fileDescriptor)
 				f = open(fileName, "a")
-				f.write(f"Learning... Timesteps Per Episode: {self.max_timesteps_per_episode}   ")
+				f.write(f"Learning...  Discount Rate: {self.gamma}   Timesteps Per Episode: {self.max_timesteps_per_episode}   ")
 				f.write(f"Timesteps Per Batch: {self.timesteps_per_batch}   TOTAL TIMESTEPS IN TRAINING: {total_timesteps}\n")
 				f.write(f"\n\nBatch Number, Average Reward, Average Timesteps per Episode, Average Actor Loss\n")
 				f.close()
@@ -189,6 +189,8 @@ class PPO:
 			f.close()
 		except:
 			print("ERROR CREATING FILE with File Name: ", fileName)
+
+		return fileName
 
 
 	def rollout_train(self, fileName=None):
@@ -440,15 +442,15 @@ class PPO:
 		avg_actor_loss = str(round(avg_actor_loss, 5))
 
 		# Print logging statements
-		print(flush=True)
-		print(f"-------------------- Iteration #{i_so_far} --------------------", flush=True)
-		print(f"Average Episodic Length: {avg_ep_lens}", flush=True)
-		print(f"Average Episodic Return: {avg_ep_rews}", flush=True)
-		print(f"Average Loss: {avg_actor_loss}", flush=True)
-		print(f"Timesteps So Far: {t_so_far}", flush=True)
-		print(f"Iteration took: {delta_t} secs", flush=True)
-		print(f"------------------------------------------------------", flush=True)
-		print(flush=True)
+		# print(flush=True)
+		# print(f"-------------------- Iteration #{i_so_far} --------------------", flush=True)
+		# print(f"Average Episodic Length: {avg_ep_lens}", flush=True)
+		# print(f"Average Episodic Return: {avg_ep_rews}", flush=True)
+		# print(f"Average Loss: {avg_actor_loss}", flush=True)
+		# print(f"Timesteps So Far: {t_so_far}", flush=True)
+		# print(f"Iteration took: {delta_t} secs", flush=True)
+		# print(f"------------------------------------------------------", flush=True)
+		# print(flush=True)
 
 		if fileName is not None:
 			try:
