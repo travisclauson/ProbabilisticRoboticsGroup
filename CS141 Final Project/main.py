@@ -23,13 +23,14 @@ def main():
     # ArgumentParser because it's too annoying to type them every time at command line. Instead, you can change them here.
     # To see a list of hyperparameters, look in ppo.py at function _init_hyperparameters
     hyperparameters = {
+          'total_timesteps': 20_000, 
           'timesteps_per_batch': 4_000, 
           'max_timesteps_per_episode': 2_000, 
           'gamma': 0.99, 
           'n_updates_per_iteration': 10,
           'lr': 3e-4, #
           'clip': 0.2,
-          'render': True, #controls whether to render the environment or not
+          'render': False, #controls whether to render the environment or not
           'render_every_i': 1,
           'train_verbose': False,
           'save_freq': 1,

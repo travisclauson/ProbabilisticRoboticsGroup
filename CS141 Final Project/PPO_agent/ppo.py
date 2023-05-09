@@ -70,7 +70,7 @@ class PPO:
 			'actor_losses': [],     # losses of actor network in current iteration
 		}
 
-	def learn(self, total_timesteps, writeToFile = False):
+	def learn(self, total_timesteps, writeToFile = True):
 		"""
 			Train the actor and critic networks. Here is where the main PPO algorithm resides.
 
@@ -91,9 +91,8 @@ class PPO:
 				os.makedirs(path, exist_ok=True)
 				fileName = os.path.join(path, fileDescriptor)
 				f = open(fileName, "a")
-				f.write(f"Learning... Timesteps Per Episode: {self.max_timesteps_per_episode}     ")
-				f.write(f"Timesteps Per Batch{self.timesteps_per_batch}     TOTAL TIMESTEPS IN TRAINING: {total_timesteps}\n")
-				f.write(f"Hyperparameters: {self.hyperparameters}\n")
+				f.write(f"Learning... Timesteps Per Episode: {self.max_timesteps_per_episode}   ")
+				f.write(f"Timesteps Per Batch: {self.timesteps_per_batch}   TOTAL TIMESTEPS IN TRAINING: {total_timesteps}\n")
 				f.write(f"\n\nBatch Number, Average Reward, Average Timesteps per Episode, Average Actor Loss\n")
 				f.close()
 			except:
@@ -182,11 +181,15 @@ class PPO:
 				torch.save(self.critic.state_dict(), './ppo_critic.pth')
 		
 		# Print a final summary of our training
-		f = open(fileName, "a")
-		f.write(f"\n\n Total Timesteps: {t_so_far} \n")
-		f.write(f"Total Episodes: {e_so_far} \n")
-		f.write(f"Total Iterations/Batches: {i_so_far} \n")
-		f.close()
+		try:
+			f = open(fileName, "a")
+			f.write(f"\n\n Total Timesteps: {t_so_far} \n")
+			f.write(f"Total Episodes: {e_so_far} \n")
+			f.write(f"Total Iterations/Batches: {i_so_far} \n")
+			f.close()
+		except:
+			print("ERROR CREATING FILE with File Name: ", fileName)
+
 
 	def rollout_train(self, fileName=None):
 		"""
@@ -230,6 +233,7 @@ class PPO:
 			# Pan is hardcoded to an initialization location for first 100 time steps
 			for i in range(100):
 				self.env.step(action= [0.2,0.2,0,0,0])
+				if self.render: time.sleep(0.01)
 			print(f"\n\n\n ---- Batch Number {self.logger['i_so_far']}----")
 			print(f"---- Episode Number {len(batch_rews)} ----\n\n\n")
 
@@ -250,7 +254,7 @@ class PPO:
 				# Note that rew is short for reward.
 				action, log_prob = self.get_action(obs)
 				obs, rew, done, truncated  = self.env.step(action)
-				#time.sleep(0.01)
+				if self.render: time.sleep(0.01)
 
 				# Track recent reward, action, and action log probability
 				ep_rews.append(rew)
@@ -449,7 +453,7 @@ class PPO:
 		if fileName is not None:
 			try:
 				f = open(fileName, "a")
-				f.write(f"{i_so_far}, {avg_ep_lens}, {avg_ep_rews}, {avg_actor_loss}\n")
+				f.write(f"{i_so_far}, {avg_ep_rews}, {avg_ep_lens}, {avg_actor_loss}\n")
 				f.close()
 			except:
 				print("Error writing to file")

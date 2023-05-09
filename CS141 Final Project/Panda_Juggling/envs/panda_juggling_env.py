@@ -12,8 +12,8 @@ class PandaJugglingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        self.client = p.connect(p.GUI)
-        #self.client = p.connect(p.DIRECT)
+        #self.client = p.connect(p.GUI)
+        self.client = p.connect(p.DIRECT)
         self.np_random, _ = gym.utils.seeding.np_random()
         p.setTimeStep(1/30, self.client)
         p.setPhysicsEngineParameter(restitutionVelocityThreshold=0)
