@@ -10,9 +10,14 @@ Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post
 
 ### Packages Required
 
-Pybullet
-Open AI Gym
-Pytorch 
+Pybullet,
+Open AI Gym,
+Pytorch,
+Time,
+OS,
+sys,
+Nmpy,
+MatPlotLib
 
 
 ### Structure of Code
