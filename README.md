@@ -8,7 +8,11 @@ We completed this project as a part of Professor Jivko Sinapov's Probabilistc Ro
 
 Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post, https://github.com/ericyangyu/PPO-for-Beginners/tree/master
 
-Run the Main.py file to run the complete simulation 
+## To Run:
+Execute Main.py file to train the agent
+
+## To Turn Graphics ON/OFF:
+1) Change hyperparameter 'Render' in main.py to 'False' / 'True'.  2) Change the 'p.connect' lines are commented in 'panda_juggling_env.py' to 'P.GUI' or 'P.DIRECT'
 
 ### Packages Required
 
