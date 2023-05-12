@@ -8,6 +8,18 @@ We completed this project as a part of Professor Jivko Sinapov's Probabilistc Ro
 
 Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post
 
+### Packages Required
+
+Pybullet,
+Open AI Gym,
+Pytorch,
+Time,
+OS,
+sys,
+Nmpy,
+MatPlotLib
+
+
 ### Structure of Code
 
 ### * Main.py
