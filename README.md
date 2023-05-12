@@ -8,6 +8,8 @@ We completed this project as a part of Professor Jivko Sinapov's Probabilistc Ro
 
 Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post
 
+Run the Main.py file to run the complete simulation 
+
 ### Packages Required
 
 Pybullet,
@@ -16,7 +18,7 @@ Pytorch,
 Time,
 OS,
 sys,
-Nmpy,
+Numpy,
 MatPlotLib
 
 
