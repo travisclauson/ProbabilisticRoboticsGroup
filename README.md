@@ -6,7 +6,7 @@
 
 We completed this project as a part of Professor Jivko Sinapov's Probabilistc Robotics course at Tufts Univeristy. We used Pybullet and OpenAI Gym to create the simulation environment. Then, we trained the system using PyTorch and a hand-crafted Proximity Policy Optimization RL algorithm.  
 
-Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post
+Acknowledgement: https://github.com/GerardMaggiolino/Gym-Medium-Post, https://github.com/ericyangyu/PPO-for-Beginners/tree/master
 
 Run the Main.py file to run the complete simulation 
 
